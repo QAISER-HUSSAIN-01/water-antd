@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { sidebarList } from "../utils/dummy";
+import { sidebarList } from "../utils/sidebarMenu";
 import { Col, Divider, Layout, Menu, Row, Space, Typography } from "antd";
 import { AlibabaOutlined } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
@@ -30,7 +30,7 @@ export default function Sidebar({ hide, setHide }) {
           {!hide && (
             <Col className="flex flex-column">
               <Typography.Text className="bold mb-0">
-                Qaiser Hussain {`${hide}`}
+                Qaiser Hussain
               </Typography.Text>
               <Typography.Text>Software Engineer</Typography.Text>
             </Col>

@@ -3,23 +3,12 @@ import { Checkbox, Col, Form, Row, Space } from "antd";
 import ButtonComponent from "components/ButtonComponent";
 import TableComponent from "components/TableComponent";
 import TableConfig from "components/TableConfig";
-import FormTabs from "components/form";
 import FormComponent from "components/form/FormComponent";
 import InputCheckbox from "components/form/InputCheckbox";
-import InputSelect from "components/form/InputSelect";
 import InputText from "components/form/InputText";
 import React, { useEffect, useState } from "react";
 
-export default function UserInventory() {
-  const initialValues = {
-    Id: 0,
-    Name: "",
-    ShortName: "",
-    UniqueId: "",
-    HeadOffice: true,
-    Enabled: true,
-    Deleted: true,
-  };
+export default function Customers() {
   const { getColumnSearchProps, sort, sortString } = TableConfig();
   const [isLoading, setIsLoading] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
@@ -36,13 +25,13 @@ export default function UserInventory() {
           item.Id == formData.Id ? { ...formData, ...values } : item
         )
       );
-      form.setFieldsValue(initialValues);
+      // form.setFieldsValue(initialValues);
       setFormData({});
     } else {
       const Id = (Math.random() * 356).toString();
       setIsLoading(false);
       setRows([...rows, { ...values, Id: Id }]);
-      form.setFieldsValue(initialValues);
+      // form.setFieldsValue(initialValues);
       setFormData({});
     }
   };
@@ -60,43 +49,43 @@ export default function UserInventory() {
   const columns = [
     {
       key: "1",
-      title: "Form Name",
+      title: "Name",
       dataIndex: "Name",
       ...getColumnSearchProps("Name"),
       ...sortString("Name"),
     },
     {
       key: "2",
-      title: "Save",
-      dataIndex: "IsSave",
-      render: (_, record) => <Checkbox checked={record.IsSave} />,
-      className: "text-center",
+      title: "Phone No",
+      dataIndex: "PhoneNo",
+      ...getColumnSearchProps("PhoneNo"),
+      ...sort("PhoneNo"),
     },
     {
       key: "3",
-      title: "Edit",
-      dataIndex: "IsEdit",
-      render: (_, record) => <Checkbox checked={record.IsEdit} />,
-      className: "text-center",
+      title: "Address",
+      dataIndex: "Address",
+      ...getColumnSearchProps("Address"),
+      ...sortString("Address"),
     },
     {
-        key: "4",
-        title: "Delete",
-        dataIndex: "IsDelete",
-        render: (_, record) => <Checkbox checked={record.IsDelete} />,
-        className: "text-center",
-      },
-      {
-        key: "5",
-        title: "Post",
-        dataIndex: "IsPost",
-        render: (_, record) => <Checkbox checked={record.IsPost} />,
-        className: "text-center",
-      },
+      key: "4",
+      title: "Bottle Qty",
+      dataIndex: "BottleQty",
+      ...getColumnSearchProps("BottleQty"),
+      ...sort("BottleQty"),
+    },
     {
-      key: "6",
+      key: "5",
+      title: "Bottle Price",
+      dataIndex: "BottlePrice",
+      ...getColumnSearchProps("BottlePrice"),
+      ...sort("BottlePrice"),
+    },
+
+    {
+      key: "5",
       title: "Action",
-      className: "text-center",
       render: (_, record) => (
         <Space>
           {" "}
@@ -114,14 +103,24 @@ export default function UserInventory() {
     },
   ];
 
+
   const fields = (
     <>
       <Row gutter={[20, 0]}>
         <Col xs={24} md={12} xl={8}>
-          <InputSelect label={"Branch"} name={"Branch"} />
+          <InputText label={"Name"} name={"Name"} />
         </Col>
         <Col xs={24} md={12} xl={8}>
-          <InputSelect label={"User"} name={"User"} />
+          <InputText label={"Phone No"} name={"Phone No"} />
+        </Col>
+        <Col xs={24} md={12} xl={8}>
+          <InputText label={"Address"} name={"Address"} />
+        </Col>
+        <Col xs={24} md={12} xl={8}>
+          <InputText label={"Bottle Qty"} name={"BottleQty"} />
+        </Col>
+        <Col xs={24} md={12} xl={8}>
+          <InputText label={"Bottle Price"} name={"BottlePrice"} />
         </Col>
       </Row>
     </>
@@ -131,20 +130,20 @@ export default function UserInventory() {
     // <Card>
     <>
       <FormComponent
-        title={"Add User Inventory Role"}
+        title={"Add Customer"}
         children={fields}
         handleSubmit={handleSubmit}
         form={form}
-        submit={"Search"}
+        submit={formData.Id ? "Update" : "Save"}
         isLoading={isLoading}
-        initialValues={initialValues}
+        // initialValues={initialValues}
         // customAction={customAction}
       />
       <br />
       <TableComponent
         columns={columns || []}
         rows={rows || []}
-        title={"User Inventory Role List"}
+        title={"Customer List"}
         loading={isTableLoading}
       />
     </>
