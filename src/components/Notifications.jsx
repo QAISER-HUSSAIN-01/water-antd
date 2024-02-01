@@ -1,14 +1,13 @@
 import { notification } from "antd";
-export default function Notifications() {
-  const SuccessNotification = (description) => {
+  export const SuccessNotification = (description) => {
     notification.success({
       message: "Success",
       description: description,
       placement: "topRight",
-      duration: 5,
+      duration: 2,
     });
   };
-  const WarningNotification = (description) => {
+  export const WarningNotification = (description) => {
     notification.warning({
       message: "Warning",
       description: description,
@@ -16,7 +15,7 @@ export default function Notifications() {
       duration: 5,
     });
   };
-  const InfoNotification = (description) => {
+  export const InfoNotification = (description) => {
     notification.info({
       message: "Info",
       description: description,
@@ -24,7 +23,7 @@ export default function Notifications() {
       duration: 5,
     });
   };
-  const ErrorNotification = (description) => {
+  export const ErrorNotification = (description) => {
     notification.error({
       message: "Error",
       description: description,
@@ -32,10 +31,4 @@ export default function Notifications() {
       duration: 5,
     });
   };
-  return {
-    SuccessNotification,
-    WarningNotification,
-    InfoNotification,
-    ErrorNotification,
-  };
-}
+

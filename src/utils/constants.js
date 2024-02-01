@@ -21,6 +21,8 @@ export const EMAIL = {
 }
 
 
+export const options = [{value:'',label:'Select'},{value:true,label:'Yes'},{value:false,label:'No'},]
+
 
 
 // https://github.com/QAISER-HUSSAIN-01/restaurant.git

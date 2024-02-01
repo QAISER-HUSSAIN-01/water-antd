@@ -28,7 +28,7 @@ export default function InputSelect({
           { value: "two", label: "label two" },
           { value: "three", label: "label three" },
         ]}
-        filterOption={(input, option) => (option?.label ?? "").includes(input)}
+        filterOption={(input, option) => (option?.label.toLowerCase() ?? "").includes(input.toLowerCase())}
         // filterSort={(optionA, optionB) =>
         //   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
         // }

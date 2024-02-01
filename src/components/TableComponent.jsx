@@ -95,7 +95,7 @@ export default function TableComponent({
         scroll={{ x: 500, y: 400 }}
         // bordered
         loading={loading}
-        rowKey={"Id"}
+        rowKey={"_id"}
         // rowSelection={{
         //   selectedRowKeys:selectedRowKeys,
         //   onSelect: (prop) => {

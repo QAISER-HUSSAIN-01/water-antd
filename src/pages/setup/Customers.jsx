@@ -1,90 +1,124 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Checkbox, Col, Form, Row, Space } from "antd";
+import { Col, Form, Row, Space } from "antd";
 import ButtonComponent from "components/ButtonComponent";
+import { SuccessNotification } from "components/Notifications";
 import TableComponent from "components/TableComponent";
 import TableConfig from "components/TableConfig";
 import FormComponent from "components/form/FormComponent";
-import InputCheckbox from "components/form/InputCheckbox";
 import InputText from "components/form/InputText";
 import React, { useEffect, useState } from "react";
+import { Delete, GetAll, Post, Update } from "utils/CrudApi";
+import { NUMERIC } from "utils/constants";
 
 export default function Customers() {
+  const initialValues = {
+    username: "",
+    phone: "",
+    address: "",
+    bottleQty: "",
+    bottlePrice: "",
+    bottlesTotalAmount: "",
+    bottlesRecievedAmount: "",
+    bottlesRemainingAmount: "",
+  };
   const { getColumnSearchProps, sort, sortString } = TableConfig();
   const [isLoading, setIsLoading] = useState(false);
+  const [id, setId] = useState(null);
   const [isTableLoading, setIsTableLoading] = useState(false);
-  const [formData, setFormData] = useState({});
   const [rows, setRows] = useState([]);
   const [form] = Form.useForm();
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (payload) => {
     setIsLoading(true);
-    if (formData?.operation == 3) {
+    const data = await Post("user", payload);
+    if (data.success) {
+      setRows(data?.data);
       setIsLoading(false);
-      setRows(
-        rows.map((item) =>
-          item.Id == formData.Id ? { ...formData, ...values } : item
-        )
-      );
-      // form.setFieldsValue(initialValues);
-      setFormData({});
-    } else {
-      const Id = (Math.random() * 356).toString();
-      setIsLoading(false);
-      setRows([...rows, { ...values, Id: Id }]);
-      // form.setFieldsValue(initialValues);
-      setFormData({});
+      SuccessNotification(data?.message);
+      form.setFieldsValue(initialValues);
     }
+    setIsLoading(false);
   };
 
   const handleEdit = (record) => {
-    setFormData({ ...record, operation: 3 });
     form.setFieldsValue(record);
+    setId(record?._id);
+  };
+  const handleUpdate = async (payload) => {
+    setIsTableLoading(true);
+    const data = await Update("user", id, payload);
+    if (data?.success) {
+      setRows(data?.data);
+      setIsTableLoading(false);
+      form.setFieldsValue(initialValues);
+      setId(null);
+    }
+    setIsTableLoading(false);
   };
 
-  const handleDelete = (record) => {
-    const copy = [...rows];
-    setRows(copy.filter((item) => item.Id != record.Id));
+  const handleDelete = async (record) => {
+    setIsTableLoading(true);
+    const data = await Delete("user", record._id);
+    if (data?.success) {
+      setRows(data?.data);
+      setIsTableLoading(false);
+    }
+    setIsTableLoading(false);
   };
 
   const columns = [
     {
       key: "1",
       title: "Name",
-      dataIndex: "Name",
-      ...getColumnSearchProps("Name"),
-      ...sortString("Name"),
+      dataIndex: "username",
+      ...getColumnSearchProps("username"),
+      ...sortString("username"),
     },
     {
       key: "2",
       title: "Phone No",
-      dataIndex: "PhoneNo",
-      ...getColumnSearchProps("PhoneNo"),
-      ...sort("PhoneNo"),
+      dataIndex: "phone",
+      ...getColumnSearchProps("phone"),
+      ...sort("phone"),
     },
     {
       key: "3",
       title: "Address",
-      dataIndex: "Address",
-      ...getColumnSearchProps("Address"),
-      ...sortString("Address"),
+      dataIndex: "address",
+      ...getColumnSearchProps("address"),
+      ...sortString("address"),
     },
     {
       key: "4",
       title: "Bottle Qty",
-      dataIndex: "BottleQty",
-      ...getColumnSearchProps("BottleQty"),
-      ...sort("BottleQty"),
+      dataIndex: "bottleQty",
+      ...getColumnSearchProps("bottleQty"),
+      ...sort("bottleQty"),
     },
     {
       key: "5",
       title: "Bottle Price",
-      dataIndex: "BottlePrice",
-      ...getColumnSearchProps("BottlePrice"),
-      ...sort("BottlePrice"),
+      dataIndex: "bottlePrice",
+      ...getColumnSearchProps("bottlePrice"),
+      ...sort("bottlePrice"),
     },
-
     {
-      key: "5",
+      key: "6",
+      title: "Remaining Amount",
+      dataIndex: "bottlesRemainingAmount",
+    },
+    {
+      key: "7",
+      title: "Recieved Amount",
+      dataIndex: "bottlesRecievedAmount",
+    },
+    {
+      key: "8",
+      title: "Total Amount",
+      dataIndex: "bottlesTotalAmount",
+    },
+    {
+      key: "9",
       title: "Action",
       render: (_, record) => (
         <Space>
@@ -102,41 +136,101 @@ export default function Customers() {
       ),
     },
   ];
-
-
   const fields = (
     <>
       <Row gutter={[20, 0]}>
         <Col xs={24} md={12} xl={8}>
-          <InputText label={"Name"} name={"Name"} />
+          <InputText label={"Name"} name={"username"} />
         </Col>
         <Col xs={24} md={12} xl={8}>
-          <InputText label={"Phone No"} name={"Phone No"} />
+          <InputText label={"Phone No"} name={"phone"} pattern={NUMERIC} />
         </Col>
         <Col xs={24} md={12} xl={8}>
-          <InputText label={"Address"} name={"Address"} />
+          <InputText label={"Address"} name={"address"} />
         </Col>
         <Col xs={24} md={12} xl={8}>
-          <InputText label={"Bottle Qty"} name={"BottleQty"} />
+          <InputText
+            label={"Bottle Qty"}
+            name={"bottleQty"}
+            pattern={NUMERIC}
+          />
         </Col>
         <Col xs={24} md={12} xl={8}>
-          <InputText label={"Bottle Price"} name={"BottlePrice"} />
+          <InputText
+            label={"Bottle Price"}
+            name={"bottlePrice"}
+            pattern={NUMERIC}
+          />
+        </Col>
+
+        <Col xs={24} md={12} xl={8}>
+          <InputText
+            label={"Recieved Amount"}
+            name={"bottlesRecievedAmount"}
+            pattern={NUMERIC}
+          />
+        </Col>
+        <Col xs={24} md={12} xl={8}>
+          <InputText
+            label={"Remaining Amount"}
+            name={"bottlesRemainingAmount"}
+            disabled={true}
+            pattern={NUMERIC}
+          />
+        </Col>
+        <Col xs={24} md={12} xl={8}>
+          <InputText
+            label={"Total Amount"}
+            name={"bottlesTotalAmount"}
+            disabled={true}
+            pattern={NUMERIC}
+          />
         </Col>
       </Row>
     </>
   );
 
+  const validate = (change, values) => {
+    if (values.bottleQty && values.bottlePrice) {
+      form.setFieldsValue({
+        bottlesTotalAmount: `${
+          parseInt(values.bottleQty) * parseInt(values.bottlePrice)
+        }`,
+        bottlesRemainingAmount: `${
+          parseInt(values.bottleQty) * parseInt(values.bottlePrice)
+        }`,
+      });
+    }
+    if (change?.bottlesRecievedAmount) {
+      form.setFieldValue(
+        "bottlesRemainingAmount",
+        `${
+          parseInt(values.bottlesTotalAmount) -
+          parseInt(values.bottlesRecievedAmount)
+        }`
+      );
+    }
+  };
+
+  useEffect(() => {
+    const fetched = async () => {
+      const data = await GetAll("user");
+      setRows(data?.data);
+    };
+    fetched();
+  }, []);
   return (
     // <Card>
     <>
       <FormComponent
         title={"Add Customer"}
         children={fields}
-        handleSubmit={handleSubmit}
+        handleSubmit={id ? handleUpdate : handleSubmit}
         form={form}
-        submit={formData.Id ? "Update" : "Save"}
+        submit={id ? "Update" : "Save"}
         isLoading={isLoading}
-        // initialValues={initialValues}
+        initialValues={initialValues}
+        validate={validate}
         // customAction={customAction}
       />
       <br />

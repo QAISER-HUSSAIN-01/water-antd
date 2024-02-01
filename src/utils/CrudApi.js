@@ -1,9 +1,10 @@
 import axios from "axios";
+import { ErrorNotification } from "components/Notifications";
 
-const url = "http://localhost:3001/";
+const url = "http://localhost:8000/api/";
 
 const headers = {
-  Authorization: "token",
+  Authorization: localStorage.getItem('token'),
   "Content-Type": "application/json",
 };
 
@@ -17,55 +18,63 @@ const handleRequestError = (error) => {
     const { status, data } = error.response;
     switch (status) {
       case 400:
+        ErrorNotification(data?.message);
         console.log("Bad Request:", data.error); // Display a user-friendly message
         break;
       case 401:
+        ErrorNotification(data?.message);
         console.log("Unauthorized:", data.error); // Redirect to login page or display a login modal
         break;
       case 403:
+        ErrorNotification(data?.message);
         console.log("Forbidden:", data.error); // Display a user-friendly message
         break;
       case 404:
+        ErrorNotification(data?.message);
         console.log("Not Found:", data.error); // Display a user-friendly message or redirect
         break;
       case 500:
+        ErrorNotification(data?.message);
         console.log("Internal Server Error:", data.error); // Display a user-friendly message
         break;
       case 503:
+        ErrorNotification(data?.message);
         console.log("Service Unavailable:", data.error); // Display a user-friendly message
         break;
       default:
+        ErrorNotification(`Server responded with an error status: ${status}`);
         console.log("Server responded with an error status:", status);
         console.log("Error response data:", data);
         break;
     }
   } else if (error.request) {
+    ErrorNotification(error.request);
     console.log("No response received from the server:", error.request);
   } else {
+    ErrorNotification(error.message);
     console.log("Error setting up the request:", error.message);
   }
 };
 
-export const Create = async (path, payload) => {
+export const Post = async (path, payload) => {
   try {
     const { data } = await axiosInstance.post(`${url + path}`, payload);
-    console.log(data);
     return data;
   } catch (error) {
     handleRequestError(error);
   }
 };
 
-export const Read = async (path, param) => {
+export const Get = async (path, param) => {
   try {
-    const { data } = await axiosInstance.get(`${url + path}/:${param}`);
+    const { data } = await axiosInstance.get(`${url + path}/${param}`);
     return data;
   } catch (error) {
     handleRequestError(error);
   }
 };
 
-export const ReadAll = async (path) => {
+export const GetAll = async (path) => {
   try {
     const { data } = await axiosInstance.get(`${url + path}`);
     return data;
@@ -77,7 +86,7 @@ export const ReadAll = async (path) => {
 export const Update = async (path, param, payload) => {
   try {
     const { data } = await axiosInstance.put(
-      `${url + path}/:${param}`,
+      `${url + path}/${param}`,
       payload
     );
     return data;
@@ -86,12 +95,10 @@ export const Update = async (path, param, payload) => {
   }
 };
 
-export const Delete = async (path, param, payload) => {
+export const Delete = async (path, param) => {
   try {
     const { data } = await axiosInstance.delete(
-      `${url + path}/:${param}`,
-      payload
-    );
+      `${url + path}/${param}`);
     return data;
   } catch (error) {
     handleRequestError(error);
