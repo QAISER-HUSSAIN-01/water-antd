@@ -5,14 +5,14 @@ import { ErrorNotification } from "components/Notifications";
 const url = "https://crimson-cricket-veil.cyclic.app/api/";
 
 const headers = {
-  Authorization: localStorage.getItem('token'),
+  // Authorization: localStorage.getItem('token'),
   "Content-Type": "application/json",
 };
 
-const axiosInstance = axios.create({
-  baseURL: url,
-  headers: headers,
-});
+// const axiosInstance = axios.create({
+//   baseURL: url,
+//   headers: headers,
+// });
 
 const handleRequestError = (error) => {
   if (error.response) {
@@ -59,7 +59,9 @@ const handleRequestError = (error) => {
 
 export const Post = async (path, payload) => {
   try {
-    const { data } = await axiosInstance.post(`${url + path}`, payload);
+    const { data } = await axios.post(`${url + path}`, payload, {
+      headers: { ...headers, Authorization: localStorage.getItem("token") },
+    });
     return data;
   } catch (error) {
     handleRequestError(error);
@@ -68,7 +70,9 @@ export const Post = async (path, payload) => {
 
 export const Get = async (path, param) => {
   try {
-    const { data } = await axiosInstance.get(`${url + path}/${param}`);
+    const { data } = await axios.get(`${url + path}/${param}`, {
+      headers: { ...headers, Authorization: localStorage.getItem("token") },
+    });
     return data;
   } catch (error) {
     handleRequestError(error);
@@ -77,7 +81,9 @@ export const Get = async (path, param) => {
 
 export const GetAll = async (path) => {
   try {
-    const { data } = await axiosInstance.get(`${url + path}`);
+    const { data } = await axios.get(`${url + path}`, {
+      headers: { ...headers, Authorization: localStorage.getItem("token") },
+    });
     return data;
   } catch (error) {
     handleRequestError(error);
@@ -86,10 +92,9 @@ export const GetAll = async (path) => {
 
 export const Update = async (path, param, payload) => {
   try {
-    const { data } = await axiosInstance.put(
-      `${url + path}/${param}`,
-      payload
-    );
+    const { data } = await axios.put(`${url + path}/${param}`, payload, {
+      headers: { ...headers, Authorization: localStorage.getItem("token") },
+    });
     return data;
   } catch (error) {
     handleRequestError(error);
@@ -98,8 +103,9 @@ export const Update = async (path, param, payload) => {
 
 export const Delete = async (path, param) => {
   try {
-    const { data } = await axiosInstance.delete(
-      `${url + path}/${param}`);
+    const { data } = await axios.delete(`${url + path}/${param}`, {
+      headers: { ...headers, Authorization: localStorage.getItem("token") },
+    });
     return data;
   } catch (error) {
     handleRequestError(error);

@@ -179,6 +179,9 @@
   background-color: #4096ff !important;
 }
 /* utilites*/
+.capitalize{
+  text-transform: capitalize;
+}
 .white{
   color: white !important;
 }

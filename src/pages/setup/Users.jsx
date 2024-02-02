@@ -1,82 +1,99 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Checkbox, Col, Form, Input, Row, Space } from "antd";
+import { Badge, Col, Form, Row, Space, Tag } from "antd";
 import ButtonComponent from "components/ButtonComponent";
+import { SuccessNotification } from "components/Notifications";
 import TableComponent from "components/TableComponent";
 import TableConfig from "components/TableConfig";
 import FormComponent from "components/form/FormComponent";
-import InputCheckbox from "components/form/InputCheckbox";
 import InputPassword from "components/form/InputPassword";
 import InputSelect from "components/form/InputSelect";
 import InputText from "components/form/InputText";
 import React, { useEffect, useState } from "react";
+import { Delete, GetAll, Post, Update } from "utils/CrudApi";
+import { EMAIL, NUMERIC, OPTIONS, ROLES_MENU } from "utils/constants";
 
 export default function Users() {
+  const initialValues = {
+    username: "",
+    email: "",
+    password: "",
+    role: "",
+    isActive: true,
+  };
   const { getColumnSearchProps, sort, sortString } = TableConfig();
   const [isLoading, setIsLoading] = useState(false);
+  const [id, setId] = useState(null);
   const [isTableLoading, setIsTableLoading] = useState(false);
-  const [formData, setFormData] = useState({});
   const [rows, setRows] = useState([]);
   const [form] = Form.useForm();
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (payload) => {
     setIsLoading(true);
-    if (formData?.operation == 3) {
+    const data = await Post("register", payload);
+    if (data?.success) {
+      setRows(data?.data);
       setIsLoading(false);
-      setRows(
-        rows.map((item) =>
-          item.Id == formData.Id ? { ...formData, ...values } : item
-        )
-      );
-      // form.setFieldsValue(initialValues);
-      setFormData({});
-    } else {
-      const Id = (Math.random() * 356).toString();
-      setIsLoading(false);
-      setRows([...rows, { ...values, Id: Id }]);
-      // form.setFieldsValue(initialValues);
-      setFormData({});
+      SuccessNotification(data?.message);
+      form.setFieldsValue(initialValues);
     }
+    setIsLoading(false);
   };
 
   const handleEdit = (record) => {
-    setFormData({ ...record, operation: 3 });
     form.setFieldsValue(record);
+    setId(record?._id);
+  };
+  const handleUpdate = async (payload) => {
+    delete payload?.password;
+    setIsTableLoading(true);
+    const data = await Update("user", id, payload);
+    if (data?.success) {
+      SuccessNotification(data?.message);
+      setRows(data?.data);
+      setIsTableLoading(false);
+      form.setFieldsValue(initialValues);
+      setId(null);
+    }
+    setIsTableLoading(false);
   };
 
-  const handleDelete = (record) => {
-    const copy = [...rows];
-    setRows(copy.filter((item) => item.Id != record.Id));
+  const handleDelete = async (record) => {
+    setIsTableLoading(true);
+    const data = await Delete("user", record._id);
+    if (data?.success) {
+      setRows(data?.data);
+      setIsTableLoading(false);
+    }
+    setIsTableLoading(false);
   };
 
   const columns = [
     {
       key: "1",
       title: "Name",
-      dataIndex: "Name",
-      ...getColumnSearchProps("Name"),
-      ...sortString("Name"),
+      dataIndex: "username",
+      ...getColumnSearchProps("username"),
+      ...sortString("username"),
     },
     {
       key: "2",
       title: "Email",
-      dataIndex: "Email",
-      ...getColumnSearchProps("Email"),
-      ...sortString("Email"),
+      dataIndex: "email",
+      ...getColumnSearchProps("email"),
+      ...sortString("email"),
     },
     {
       key: "3",
       title: "Role",
-      dataIndex: "Role",
-      ...getColumnSearchProps("Role"),
-      ...sort("Role"),
+      dataIndex: "role",
+      ...getColumnSearchProps("role"),
+      ...sort("role"),
     },
     {
       key: "4",
       title: "Is Active",
-      dataIndex: "IsActive",
-      render:(_,record)=>{
-        <Checkbox checked={record.IsActive} />
-      }    
+      dataIndex: "isActive",
+      render:(_,record)=> record?.isActive ? <Tag color="green">Yes</Tag>:<Tag color="error">No</Tag>
     },
     {
       key: "5",
@@ -97,25 +114,41 @@ export default function Users() {
       ),
     },
   ];
-
   const fields = (
     <>
       <Row gutter={[20, 0]}>
         <Col xs={24} md={12} xl={8}>
-          <InputText label={"Name"} name={"Name"} />
+          <InputText label={"Name"} name={"username"} />
         </Col>
         <Col xs={24} md={12} xl={8}>
-          <InputPassword label={"Password"} name={"Password"} />
+          <InputText label={"Email"} name={"email"} pattern={EMAIL} />
+        </Col>
+        {!id && (
+          <Col xs={24} md={12} xl={8}>
+            <InputPassword label={"Password"} name={"password"} />
+          </Col>
+        )}
+        <Col xs={24} md={12} xl={8}>
+          <InputSelect label={"Role"} name={"role"} options={ROLES_MENU} />
         </Col>
         <Col xs={24} md={12} xl={8}>
-          <InputSelect label={"Role"} name={"Role"} />
-        </Col>
-        <Col xs={24} md={12} xl={8}>
-          <InputCheckbox label={"Is Active"} name={"IsActive"} />
+          <InputSelect
+            label={"Is Active"}
+            name={"isActive"}
+            options={OPTIONS}
+          />
         </Col>
       </Row>
     </>
   );
+
+  useEffect(() => {
+    const fetched = async () => {
+      const data = await GetAll("user");
+      setRows(data?.data);
+    };
+    fetched();
+  }, []);
 
   return (
     // <Card>
@@ -123,11 +156,11 @@ export default function Users() {
       <FormComponent
         title={"Add User"}
         children={fields}
-        handleSubmit={handleSubmit}
+        handleSubmit={id ? handleUpdate : handleSubmit}
         form={form}
-        submit={formData.Id ? "Update" : "Save"}
+        submit={id ? "Update" : "Save"}
         isLoading={isLoading}
-        // initialValues={initialValues}
+        initialValues={initialValues}
         // customAction={customAction}
       />
       <br />

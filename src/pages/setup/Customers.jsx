@@ -30,7 +30,7 @@ export default function Customers() {
 
   const handleSubmit = async (payload) => {
     setIsLoading(true);
-    const data = await Post("user", payload);
+    const data = await Post("customer", payload);
     if (data.success) {
       setRows(data?.data);
       setIsLoading(false);
@@ -46,7 +46,7 @@ export default function Customers() {
   };
   const handleUpdate = async (payload) => {
     setIsTableLoading(true);
-    const data = await Update("user", id, payload);
+    const data = await Update("customer", id, payload);
     if (data?.success) {
       setRows(data?.data);
       setIsTableLoading(false);
@@ -58,7 +58,7 @@ export default function Customers() {
 
   const handleDelete = async (record) => {
     setIsTableLoading(true);
-    const data = await Delete("user", record._id);
+    const data = await Delete("customer", record._id);
     if (data?.success) {
       setRows(data?.data);
       setIsTableLoading(false);
@@ -214,7 +214,7 @@ export default function Customers() {
 
   useEffect(() => {
     const fetched = async () => {
-      const data = await GetAll("user");
+      const data = await GetAll("customer");
       setRows(data?.data);
     };
     fetched();

@@ -6,7 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import DashboardLayout from "layout/DashboardLayout";
-import Dashboard from "pages/Dashboard";
+import Dashboard from "pages/dashboard/Dashboard";
 import Login from "pages/Login";
 import LoginAuth from "routes/LoginAuth";
 import ForgotPassword from "pages/ForgotPassword";

@@ -17,7 +17,9 @@ export default function Login() {
     setIsLoading(true);
    const data = await Post("login",payload);
    if(data?.success){
-    setLocalItem("token", data?.token);
+    setLocalItem("token", data?.data?.token);
+    setLocalItem("username", data?.data?.username);
+    setLocalItem("role", data?.data?.role);
     SuccessNotification(data?.message);
     navigate("/");
     setIsLoading(false);
