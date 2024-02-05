@@ -15,6 +15,7 @@ import Setting from "pages/Setting";
 import Private from "./Private";
 import Users from "pages/setup/Users";
 import Customers from "pages/setup/Customers";
+import Supply from "pages/Supply";
 
 
 export default function AppRoutes() {
@@ -41,6 +42,7 @@ export default function AppRoutes() {
         {/* private routes */}
         <Route path="/" element={<Private component={<DashboardLayout />} />}>
           <Route path="" element={<Dashboard />} />
+          <Route path="supply" element={<Supply />} />
 
           {/* Inventory Routes */}
 

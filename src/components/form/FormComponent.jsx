@@ -14,14 +14,15 @@ export default function FormComponent({
   initialValues,
   customActionJustify,
   hideActions,
-  layout
+  layout,
+  extra
 }) {
   const handleFormData = (values) => {
     handleSubmit(values);
   };
 
   return (
-    <Card title={title} bordered={false}>
+    <Card title={title} bordered={false} extra={extra}>
       <Form
         form={form}
         onFinish={(values) => handleFormData(values)}

@@ -5,6 +5,8 @@ import {
   SettingOutlined,
   GroupOutlined,
   EditTwoTone,
+  ShoppingCartOutlined
+
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 export const sidebarList = [
@@ -14,22 +16,27 @@ export const sidebarList = [
     label: <Link to="">Dashboard</Link>,
   },
   {
-    key: "/inventory",
-    icon: <AccountBookOutlined />,
-    label: "Inventory",
-    children: [
-      {
-        key: "/inventory/supply",
-        icon: <EditTwoTone />,
-        label: <Link to="inventory/supply">Supply</Link>,
-      },
-      {
-        key: "/inventory/invoice",
-        icon: <EditTwoTone />,
-        label: <Link to="inventory/invoice">Invoice</Link>,
-      }
-    ],
+    key: "/supply",
+    icon: <ShoppingCartOutlined />,
+    label: <Link to="supply">Supply</Link>,
   },
+  // {
+  //   key: "/inventory",
+  //   icon: <AccountBookOutlined />,
+  //   label: "Inventory",
+  //   children: [
+  //     {
+  //       key: "/inventory/supply",
+  //       icon: <EditTwoTone />,
+  //       label: <Link to="inventory/supply">Supply</Link>,
+  //     },
+  //     {
+  //       key: "/inventory/invoice",
+  //       icon: <EditTwoTone />,
+  //       label: <Link to="inventory/invoice">Invoice</Link>,
+  //     }
+  //   ],
+  // },
   {
     key: "/setup",
     icon: <GroupOutlined />,
