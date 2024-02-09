@@ -22,8 +22,7 @@ export default function TableComponent({
 }) {
   const { exportToCSV, exportToExcel, exportToPDF, printTable } =
     TableExports();
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  
   const headerContent = (
     <Row className="space-between">
       <Typography.Title level={5} className="line-h-1 mb-auto mt-auto">
@@ -32,23 +31,6 @@ export default function TableComponent({
       {!header && (
         <Col>
           <Space size={"middle"}>
-            {/* <ButtonComponent
-              icon={<ReloadOutlined />}
-              type={"default"}
-              tooltip="Reload Table"
-              shape={"circle"}
-              size={"small"}
-              onClick={() => {handleReload();setSelectedRows([]);setSelectedRowKeys([]);}}
-            />
-            <ButtonComponent
-              icon={<DeleteOutlined className={selectedRows.length > 0 ? "error":""} />}
-              type={"default"}
-              tooltip="Delete Selected Items"
-              shape={"circle"}
-              disabled={selectedRows.length > 0 ? false : true}
-              size={"small"}
-              onClick={()=>{handleDeleteAll(selectedRows); setSelectedRows([]); setSelectedRowKeys([]);}}
-            /> */}
             <ButtonComponent
               icon={<DownloadOutlined className="success" />}
               type={"default"}
@@ -57,14 +39,7 @@ export default function TableComponent({
               onClick={() => exportToExcel(columns, rows)}
               size={"small"}
             />
-            {/* <ButtonComponent
-              icon={<DownloadOutlined />}
-              type={"default"}
-              tooltip="Download Csv"
-              text={"Csv"}
-              onClick={() => exportToCSV(columns, rows)}
-              size={"small"}
-            /> */}
+           
             <ButtonComponent
               icon={<DownloadOutlined className="error" />}
               type={"default"}
@@ -96,6 +71,16 @@ export default function TableComponent({
         // bordered
         loading={loading}
         rowKey={"_id"}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {}, // click row
+            onDoubleClick: (event) => {}, // double click row
+            onContextMenu: (event) => {}, // right button click row
+            onMouseEnter: (event) => {}, // mouse enter row
+            onMouseLeave: (event) => {}, // mouse leave row
+            onChange: (event) => {console.log(event);}
+          };
+        }}
         // rowSelection={{
         //   selectedRowKeys:selectedRowKeys,
         //   onSelect: (prop) => {
