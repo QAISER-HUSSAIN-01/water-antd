@@ -1,19 +1,13 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Badge, Col, Form, Input, Row, Space, Tag } from "antd";
+import { Input, Space } from "antd";
 import ButtonComponent from "components/ButtonComponent";
 import { SuccessNotification } from "components/Notifications";
 import TableComponent from "components/TableComponent";
 import TableConfig from "components/TableConfig";
-import FormComponent from "components/form/FormComponent";
-import InputPassword from "components/form/InputPassword";
-import InputSelect from "components/form/InputSelect";
-import InputText from "components/form/InputText";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Delete, GetAll, Post, Update } from "utils/CrudApi";
-import { EMAIL, NUMERIC, OPTIONS, ROLES_MENU } from "utils/constants";
 
 export default function Supply() {
-
   const { getColumnSearchProps, sort, sortString } = TableConfig();
   const [id, setId] = useState(null);
   const [isTableLoading, setIsTableLoading] = useState(false);
@@ -42,6 +36,12 @@ export default function Supply() {
     setIsTableLoading(false);
   };
 
+  const handleBlur = (e,...rest)=>{
+    const {value} = e.target;
+    console.log(rest);
+    // setEditRows([{...record,}]);
+  }
+
   const getDaysInMonth = (year, month) =>
     new Date(year, month + 1, 0).getDate();
 
@@ -58,9 +58,10 @@ export default function Supply() {
         dataIndex: `day_${day}`,
         key: `day_${day}`,
         editable: true,
-       
-        render: (_, render) => (
-          <InputText />
+        render: (_, render, index) => (
+          <Input
+            onBlur={(e)=>handleBlur(e, render, index)}
+          />
         ),
       });
     }
@@ -76,7 +77,7 @@ export default function Supply() {
       ...sortString("username"),
       width: "150px",
       fixed: "left",
-       // shouldCellUpdate:(record, prevRecord)=>{console.log({record,prevRecord});},
+      // shouldCellUpdate:(record, prevRecord)=>{console.log({record,prevRecord});},
       //  onCell:(record, rowIndex)=>{console.log({record,rowIndex});},
     },
     ...generateColumns(),
@@ -88,10 +89,10 @@ export default function Supply() {
       render: (_, record) => (
         <Space>
           {/* {editedRows.includes(record.key) && ( */}
-            <ButtonComponent
-              icon={<EditOutlined />}
-              onClick={() => handleUpdate(record)}
-            />
+          <ButtonComponent
+            icon={<EditOutlined />}
+            onClick={() => handleUpdate(record)}
+          />
           {/* )} */}
           <ButtonComponent
             icon={<DeleteOutlined />}
@@ -103,7 +104,6 @@ export default function Supply() {
     },
   ];
 
-
   useEffect(() => {
     const fetched = async () => {
       const data = await GetAll("user");
@@ -113,12 +113,11 @@ export default function Supply() {
   }, []);
 
   return (
-   
-      <TableComponent
-        columns={columns || []}
-        rows={rows || []}
-        title={"Supply List"}
-        loading={isTableLoading}
-      />
+    <TableComponent
+      columns={columns || []}
+      rows={rows || []}
+      title={"Supply List"}
+      loading={isTableLoading}
+    />
   );
 }

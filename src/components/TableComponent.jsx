@@ -71,16 +71,16 @@ export default function TableComponent({
         // bordered
         loading={loading}
         rowKey={"_id"}
-        onRow={(record, rowIndex) => {
-          return {
-            onClick: (event) => {}, // click row
-            onDoubleClick: (event) => {}, // double click row
-            onContextMenu: (event) => {}, // right button click row
-            onMouseEnter: (event) => {}, // mouse enter row
-            onMouseLeave: (event) => {}, // mouse leave row
-            onChange: (event) => {console.log(event);}
-          };
-        }}
+        // onRow={(record, rowIndex) => {
+        //   return {
+        //     onClick: (event) => {}, // click row
+        //     onDoubleClick: (event) => {}, // double click row
+        //     onContextMenu: (event) => {}, // right button click row
+        //     onMouseEnter: (event) => {}, // mouse enter row
+        //     onMouseLeave: (event) => {}, // mouse leave row
+        //     onChange: (event) => {console.log(event);}
+        //   };
+        // }}
         // rowSelection={{
         //   selectedRowKeys:selectedRowKeys,
         //   onSelect: (prop) => {
