@@ -25,19 +25,17 @@ export default function Supply() {
   const [selectedDate, setSelectedDate] = useState("");
   const [date] = Form.useForm();
 
-  const handleUpdate = async (payload) => {
-    console.log("payload", payload);
-    console.log("editRows", editRows);
-    // delete payload?.password;
-    // setIsTableLoading(true);
-    // const data = await Update("user", id, payload);
-    // if (data?.success) {
-    //   SuccessNotification(data?.message);
-    //   setRows(data?.data);
-    //   setIsTableLoading(false);
-    //   setId(null);
-    // }
-    // setIsTableLoading(false);
+  const handleUpdate = async () => {
+    setIsTableLoading(true);
+    const data = await Update("supply", editRows?._id, editRows);
+    if (data?.success) {
+      SuccessNotification(data?.message);
+      setRows(data?.data);
+      setEditRows(initialEditRows);
+      setIsTableLoading(false);
+      setId(null);
+    }
+    setIsTableLoading(false);
   };
 
   const handleDelete = async (record) => {
@@ -52,7 +50,6 @@ export default function Supply() {
 
   const handleBlur = (e, render) => {
     const { value, id } = e.target;
-
     if (value) {
       if (
         editRows?.records?.length > 0 &&
@@ -80,9 +77,11 @@ export default function Supply() {
       }
     }
   };
+  
   const handleChange = (date, dateString) => {
     setSelectedDate(dateString);
   };
+  
   const dateFormat = (currentDate, din) => {
     // Get year, month, and day
     const year = currentDate.getFullYear();
@@ -108,13 +107,16 @@ export default function Supply() {
         dataIndex: dateFormat(currentDate, day),
         key: `day_${day}`,
         editable: true,
-        render: (_, render) => (
+        render: (_, render) => {
+          const value = render?.records?.find(item=>item.date == dateFormat(currentDate, day) ? item.qty : '');
+          return(
           <Input
             id={dateFormat(currentDate, day)}
             onBlur={(e) => handleBlur(e, render)}
             disabled={editRows._id && editRows._id != render?._id}
+            value={value?.qty}
           />
-        ),
+        )},
       });
     }
     return genCols;

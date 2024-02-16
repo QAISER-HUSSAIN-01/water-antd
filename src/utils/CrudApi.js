@@ -1,8 +1,8 @@
 import axios from "axios";
 import { ErrorNotification } from "components/Notifications";
 
-const url = "http://localhost:8000/api/";
-// const url = "https://crimson-cricket-veil.cyclic.app/api/";
+// const url = "http://localhost:8000/api/";
+const url = "https://crimson-cricket-veil.cyclic.app/api/";
 
 const headers = {
   // Authorization: localStorage.getItem('token'),
