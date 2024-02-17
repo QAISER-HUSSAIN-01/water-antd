@@ -68,6 +68,17 @@ export const Post = async (path, payload) => {
   }
 };
 
+export const GetAllSupply = async (path, payload) => {
+  try {
+    const { data } = await axios.post(`${url + path}`, payload, {
+      headers: { ...headers, Authorization: localStorage.getItem("token") },
+    });
+    return data;
+  } catch (error) {
+    handleRequestError(error);
+  }
+};
+
 export const Get = async (path, param) => {
   try {
     const { data } = await axios.get(`${url + path}/${param}`, {

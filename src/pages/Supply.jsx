@@ -11,23 +11,43 @@ import TableConfig from "components/TableConfig";
 import FormComponent from "components/form/FormComponent";
 import InputDate from "components/form/InputDate";
 import React, { useEffect, useState } from "react";
-import { Delete, GetAll, Post, Update } from "utils/CrudApi";
+import { Delete, GetAll, GetAllSupply, Post, Update } from "utils/CrudApi";
 
 const initialEditRows = {
   records: [],
 };
+
 export default function Supply() {
   const { getColumnSearchProps, sort, sortString } = TableConfig();
   const [id, setId] = useState(null);
   const [isTableLoading, setIsTableLoading] = useState(false);
   const [rows, setRows] = useState([]);
+  const [cashRecieved, setCashRecieved] = useState("");
   const [editRows, setEditRows] = useState(initialEditRows);
   const [selectedDate, setSelectedDate] = useState("");
   const [date] = Form.useForm();
 
+  const checkIsNaN = (no)=>{
+    if(!isNaN(no)){
+      return no;
+    }else{
+      return 0;
+    }
+  }
   const handleUpdate = async () => {
     setIsTableLoading(true);
-    const data = await Update("supply", editRows?._id, editRows);
+    let count = 0;
+    editRows?.records?.map(
+      (item) => (item?.qty == '' ? '' : count = count + parseInt(item.qty) * parseInt(editRows.bottlePrice))
+    );
+    let finalRecieved = parseInt(editRows?.recievedAmount) + (cashRecieved == '' ? 0 : parseInt(cashRecieved))  ;
+    let finalRemaining = count - (cashRecieved == '' ? 0 : parseInt(cashRecieved)) ;
+    const payload = {
+      ...editRows,
+      remainingAmount: `${finalRemaining}`,
+      recievedAmount: `${finalRecieved}`,
+    };
+    const data = await Update("supply", editRows?._id, payload);
     if (data?.success) {
       SuccessNotification(data?.message);
       setRows(data?.data);
@@ -49,39 +69,56 @@ export default function Supply() {
   };
 
   const handleBlur = (e, render) => {
+    console.log("run");
     const { value, id } = e.target;
-    if (value) {
-      if (
-        editRows?.records?.length > 0 &&
-        editRows.records?.find((item) => item.date == id)
-      ) {
-        let updated = editRows?.records?.map((item) => {
-          if (item?.date == id) {
-            return { date: id, qty: value };
-          }
-          return item;
-        });
-        setEditRows({
-          ...editRows,
-          ...render,
-          records: updated,
-        });
-      } else {
-        let created = editRows?.records?.length > 0 ? [...editRows?.records] : [];
-        created.push({ date: id, qty: value });
-        setEditRows({
-          ...editRows,
-          ...render,
-          records: created,
-        });
-      }
+    // if (value) {
+    if (
+      editRows?.records?.length > 0 &&
+      editRows?.records?.find((item) => item?.date == id)
+    ) {
+      console.log("update record in edit row");
+      let updated = editRows?.records?.map((item) => {
+        if (item?.date == id) {
+          return { date: id, qty: value };
+        }
+        return item;
+      });
+      setEditRows({
+        ...render,
+        records: updated,
+      });
+    } else if (editRows?.records?.length > 0) {
+      console.log("edit row add new record");
+      let items = editRows?.records?.map((item) => item);
+      items.push({ date: id, qty: value });
+      setEditRows({
+        ...render,
+        records: items,
+      });
+    } else if (render?.records?.length > 0) {
+      console.log("render row add new record in edit row");
+      let items = render?.records?.map((item) => item);
+      items.push({ date: id, qty: value });
+      setEditRows({
+        ...render,
+        records: items,
+      });
+    } else {
+      const createdNew = render?.records?.map((item) => item);
+      createdNew.push({ date: id, qty: value });
+      console.log("new");
+      setEditRows({
+        ...render,
+        records: createdNew,
+      });
     }
+    // }
   };
-  
+
   const handleChange = (date, dateString) => {
     setSelectedDate(dateString);
   };
-  
+
   const dateFormat = (currentDate, din) => {
     // Get year, month, and day
     const year = currentDate.getFullYear();
@@ -107,18 +144,42 @@ export default function Supply() {
         dataIndex: dateFormat(currentDate, day),
         key: `day_${day}`,
         editable: true,
+        width: "40px",
         render: (_, render) => {
-          const value = render?.records?.find(item=>item.date == dateFormat(currentDate, day) ? item.qty : '');
-          return(
-          <Input
-            id={dateFormat(currentDate, day)}
-            onBlur={(e) => handleBlur(e, render)}
-            disabled={editRows._id && editRows._id != render?._id}
-            value={value?.qty}
-          />
-        )},
+          const value = render?.records?.find((item) =>
+            item.date == dateFormat(currentDate, day) ? item.qty : ""
+          );
+          const edit = editRows?.records?.find((item) =>
+            item.date == dateFormat(currentDate, day) ? item.qty : ""
+          );
+          return (
+            <Input
+              id={dateFormat(currentDate, day)}
+              // onBlur={(e) => handleBlur(e, render)}
+              onChange={(e) => handleBlur(e, render)}
+              disabled={editRows._id && editRows._id != render?._id}
+              value={(editRows._id == render?._id && edit?.qty) || value?.qty}
+            />
+          );
+        },
       });
     }
+    genCols.push({
+      key: "2",
+      title: "Cash Recieved",
+      // dataIndex: "",
+      width: "100px",
+      render: (_, render) => {
+        return (
+          <Input
+            onChange={(e) => setCashRecieved(e.target.value)}
+            disabled={editRows._id && editRows._id != render?._id}
+          />
+        );
+      },
+      // shouldCellUpdate:(record, prevRecord)=>{console.log({record,prevRecord});},
+      //  onCell:(record, rowIndex)=>{console.log({record,rowIndex});},
+    });
     return genCols;
   };
 
@@ -129,7 +190,7 @@ export default function Supply() {
       dataIndex: "username",
       ...getColumnSearchProps("username"),
       ...sortString("username"),
-      width: "150px",
+      width: "120px",
       fixed: "left",
       // shouldCellUpdate:(record, prevRecord)=>{console.log({record,prevRecord});},
       //  onCell:(record, rowIndex)=>{console.log({record,rowIndex});},
@@ -139,7 +200,7 @@ export default function Supply() {
       key: "5",
       title: "Action",
       fixed: "right",
-      width: "100px",
+      width: "45px",
       render: (_, record) => (
         <Space>
           {editRows._id == record?._id && (

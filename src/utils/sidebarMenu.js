@@ -52,18 +52,18 @@ export const sidebarList = [
         icon: <EditTwoTone />,
         label: <Link to="setup/customer">Add Customer</Link>,
       },
-      {
-        key: "/setup/item",
-        icon: <EditTwoTone />,
-        label: <Link to="setup/item">Add Item</Link>,
-      },
+      // {
+      //   key: "/setup/item",
+      //   icon: <EditTwoTone />,
+      //   label: <Link to="setup/item">Add Item</Link>,
+      // },
     ],
   },
-  {
-    key: "/setting",
-    icon: <SettingOutlined />,
-    label: <Link to="setting">Setting</Link>,
-  },
+  // {
+  //   key: "/setting",
+  //   icon: <SettingOutlined />,
+  //   label: <Link to="setting">Setting</Link>,
+  // },
 
 ];
 

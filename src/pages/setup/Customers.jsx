@@ -26,6 +26,7 @@ export default function Customers() {
   const [id, setId] = useState(null);
   const [isTableLoading, setIsTableLoading] = useState(false);
   const [rows, setRows] = useState([]);
+  const [recordForupdate, setRecordForupdate] = useState({});
   const [form] = Form.useForm();
 
   const handleSubmit = async (payload) => {
@@ -41,16 +42,27 @@ export default function Customers() {
   };
 
   const handleEdit = (record) => {
+    setRecordForupdate(record);
     form.setFieldsValue(record);
     setId(record?._id);
   };
-  const handleUpdate = async (payload) => {
+  const handleUpdate = async (formData) => {
     setIsTableLoading(true);
+    const payload = {
+      ...recordForupdate,
+      ...formData,
+      // remainingAmount:
+      //   `${parseInt(recordForupdate?.remainingAmount) + parseInt(formData?.bottlesRemainingAmount)}`,
+      // recievedAmount:
+      //   `${parseInt(recordForupdate?.recievedAmount) + parseInt(formData?.bottlesRecievedAmount)}`,
+    };
     const data = await Update("customer", id, payload);
     if (data?.success) {
       setRows(data?.data);
       setIsTableLoading(false);
+      SuccessNotification(data?.message);
       form.setFieldsValue(initialValues);
+      setRecordForupdate({});
       setId(null);
     }
     setIsTableLoading(false);

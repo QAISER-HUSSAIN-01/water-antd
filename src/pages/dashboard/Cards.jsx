@@ -13,7 +13,7 @@ export default function Cards({ data,isLoading }) {
   return (
     <Row gutter={[10, 10]}>
       <Col xs={24} md={16} xl={6}>
-        <Card>
+        <Card style={{ borderBottom:'5px solid orange'}}>
           <Row justify={"space-between"}>
             <span style={{ fontSize: "20px" }}>Clients</span>
             <span style={{ fontSize: "20px",color:'orange' }}>
@@ -27,7 +27,7 @@ export default function Cards({ data,isLoading }) {
         </Card>
       </Col>
       <Col xs={24} md={16} xl={6}>
-        <Card className="d-card">
+        <Card className="d-card" style={{ borderBottom:'5px solid green'}}>
           <Row justify={"space-between"}>
             <span style={{ fontSize: "20px" }}>Recieved Cash</span>
             <span style={{ fontSize: "20px", color:'green' }}>
@@ -42,7 +42,7 @@ export default function Cards({ data,isLoading }) {
         </Card>
       </Col>
       <Col xs={24} md={16} xl={6}>
-        <Card className="d-card">
+        <Card className="d-card" style={{ borderBottom:'5px solid red'}}>
           <Row justify={"space-between"}>
             <span style={{ fontSize: "20px" }}>Pending Cash</span>
             <span style={{ fontSize: "20px",color:'red' }}>
@@ -59,7 +59,7 @@ export default function Cards({ data,isLoading }) {
         </Card>
       </Col>
       <Col xs={24} md={16} xl={6}>
-        <Card>
+        <Card style={{ borderBottom:'5px solid blue'}}>
           <Row justify={"space-between"}>
             <span style={{ fontSize: "20px" }}>Users</span>
             <span style={{ fontSize: "20px", color:'blue' }}>
