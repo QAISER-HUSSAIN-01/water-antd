@@ -11,7 +11,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetched = async () => {
       const data = await GetAll("dashboard");
-      setObj(data.data);
+      setObj(data?.data);
       setIsLoading(false);
     };
     fetched();
@@ -21,7 +21,8 @@ export default function Dashboard() {
       <Cards data={obj} isLoading={isLoading} />
       {/* <AmountChart />
       <ExpenseChart /> */}
-      {/* <ClientsTable /> */}
+      <br />
+      <ClientsTable rows={obj?.clients} />
     </>
   );
 }

@@ -31,17 +31,17 @@ export default function Header({ handleSidebar }) {
   };
 
   const items = [
-    { key: "1", label: "...menu" },
-    {
-      key: "2",
-      label: <Link to={"setting"}>Setting</Link>,
-      icon: <SettingOutlined />,
-    },
-    {
-      key: "3",
-      label: <Link to={"changepassword"}>Change Password</Link>,
-      icon: <EditOutlined />,
-    },
+    // { key: "1", label: "...menu" },
+    // {
+    //   key: "2",
+    //   label: <Link to={"setting"}>Setting</Link>,
+    //   icon: <SettingOutlined />,
+    // },
+    // {
+    //   key: "3",
+    //   label: <Link to={"changepassword"}>Change Password</Link>,
+    //   icon: <EditOutlined />,
+    // },
     {
       key: "4",
       label: (
