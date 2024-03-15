@@ -49,17 +49,18 @@ export default function ClientsTable({ rows }) {
     {
       key: "6",
       title: "Remaining Amount",
-      dataIndex: "bottlesRemainingAmount",
+      dataIndex: "remainingAmount",
     },
     {
       key: "7",
       title: "Recieved Amount",
-      dataIndex: "bottlesRecievedAmount",
+      dataIndex: "recievedAmount",
     },
     {
       key: "8",
       title: "Total Amount",
-      dataIndex: "bottlesTotalAmount",
+      // dataIndex: "bottlesTotalAmount",
+      render:(_,record)=>(`${parseInt(record?.remainingAmount) + parseInt(record?.recievedAmount)}`)
     },
     {
       key: "9",

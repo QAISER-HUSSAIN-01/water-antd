@@ -66,7 +66,7 @@ export default function PDFTemplate({ data }) {
               </Text>
               <Text>
                 {" "}
-                Amount: {data?.bottlesRemainingAmount || '500'}
+                Amount: {data?.remainingAmount || '500'}
               </Text>
             </View>
           </View>
